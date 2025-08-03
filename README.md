@@ -1,7 +1,7 @@
 ### 欢迎(welcome)👋
 
 <p align="center">
-  <a href="https://www.zhngjah.space"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&random=false&width=435&lines=console.log('Sorasaku Yu');Sorasaku Yu;Welcome+to+my+github;https://www.zhngjah.space/" alt="Typing SVG" />
+  <a href="https://www.zhngjah.space"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&random=false&width=435&lines=Sorasaku Yu;Welcome+to+my+github;zhngjah.space" alt="Typing SVG" />
   </a>
 </p>
 

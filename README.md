@@ -1,7 +1,11 @@
+### 欢迎(welcome)👋
+
+<p align="center">
+  <a href="https://www.zhngjah.space"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&random=false&width=435&lines=console.log('Sorasaku Yu');Sorasaku Yu;Welcome+to+my+github;https://www.zhngjah.space/" alt="Typing SVG" />
+  </a>
+</p>
+
 <img width="300px" src="https://count.getloli.com/@:sorasakuyu" alt=":sorasakuyu"></img>
-<div align="center">
-  <img align="left" height="180px" src="https://github-readme-stats.vercel.app/api?username=sorasakuyu&include_all_commits=true&count_private-true&custom_title=sorasakuyu%20GitHub%20Stats&line_height=30&show_icons=true&hide_border=true&bg_color=192133&title_color=efb752&icon_color=efb752&text_color=70bed9" />
-  <img height="180px" src="https://github-readme-stats.vercel.app/api/top-langs/?username=sorasakuyu&layout=compact&langs_count=6&text_color=70bed9&icon_color=fff&title_color=efb752&bg_color=192133&theme=graywhite" />
-</div>
-
-
+<picture>
+  <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/sorasakuyu/sorasakuyu/output/github-contribution-grid-snake.svg">
+</picture>

@@ -1,5 +1,4 @@
 {
   "buildCommand": "pnpm install && pnpm run build",
-  "installCommand": "npm install -g pnpm && pnpm install",
-  "nodeVersion": "24.11.0"
+  "installCommand": "npm install -g pnpm && pnpm install"
 }

@@ -1,0 +1,100 @@
+{
+  "https://zhuanlan.zhihu.com/p/1900483903984243480": {
+    "data": {
+      "originUrl": "https://zhuanlan.zhihu.com/p/1900483903984243480",
+      "url": "https://zhuanlan.zhihu.com/p/1900483903984243480",
+      "error": "Failed to fetch: 403"
+    },
+    "timestamp": 1772113227588
+  },
+  "https://github.com/vercel/react-tweet": {
+    "data": {
+      "originUrl": "https://github.com/vercel/react-tweet",
+      "url": "https://github.com/vercel/react-tweet",
+      "title": "GitHub - vercel/react-tweet: Embed tweets in your React application.",
+      "description": "Embed tweets in your React application. Contribute to vercel/react-tweet development by creating an account on GitHub.",
+      "image": "https://opengraph.githubassets.com/a55cc4a7f7db90fbf062ee90a71d48aac4fe6a2895e6c07047be1655d3b2923f/vercel/react-tweet",
+      "logo": "https://github.com/fluidicon.png"
+    },
+    "timestamp": 1772113234493
+  },
+  "https://github.com/cosZone/astro-koharu": {
+    "data": {
+      "originUrl": "https://github.com/cosZone/astro-koharu",
+      "url": "https://github.com/cosZone/astro-koharu",
+      "title": "GitHub - cosZone/astro-koharu: astro-koharu 是一个萌系/二次元/粉蓝配色的 astro 主题博客，灵感来自 Hexo 的 Shoka 主题，加了很多自己的小巧思，性能优越。",
+      "description": "astro-koharu 是一个萌系/二次元/粉蓝配色的 astro 主题博客，灵感来自 Hexo 的 Shoka 主题，加了很多自己的小巧思，性能优越。 - cosZone/astro-koharu",
+      "image": "https://opengraph.githubassets.com/85c47ade266b4172fdbd3a21006b753b225a844061f216012b33f3f0a1deb8e3/cosZone/astro-koharu",
+      "logo": "https://github.com/fluidicon.png"
+    },
+    "timestamp": 1772113231275
+  },
+  "https://react-tweet.vercel.app/": {
+    "data": {
+      "originUrl": "https://react-tweet.vercel.app/",
+      "url": "https://react-tweet.vercel.app/",
+      "error": "Request timeout"
+    },
+    "timestamp": 1772113231794
+  },
+  "https://book.cosine.ren/": {
+    "data": {
+      "originUrl": "https://book.cosine.ren/",
+      "url": "https://book.cosine.ren/",
+      "title": "前言及目录 | 前端学习记录",
+      "description": "🌸 你好，这里是余弦的学习记录",
+      "image": "https://book.cosine.ren/~gitbook/image?url=https%3A%2F%2F934551782-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FSKmC7C4KtqVvJxUTVKwQ%252Fsocialpreview%252FbwQcTEjPTCn8otbSJ17b%252F5.jpg%3Falt%3Dmedia%26token%3Da2a5f32e-283c-4b4c-9241-0ca7176af981&width=1200&height=630&sign=47632d7f&sv=2",
+      "logo": "https://book.cosine.ren/~gitbook/image?url=https%3A%2F%2F934551782-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FSKmC7C4KtqVvJxUTVKwQ%252Ficon%252FWcaoWRW35EESs2lJLWyW%252Ftx.jpg%3Falt%3Dmedia%26token%3Dde2dd12e-60c6-4078-8049-1f37d3c7e3ec&width=48&height=48&sign=66400c08&sv=2"
+    },
+    "timestamp": 1772113259426
+  },
+  "https://t.me/cosine_front_end": {
+    "data": {
+      "originUrl": "https://t.me/cosine_front_end",
+      "url": "https://t.me/cosine_front_end",
+      "error": "Request timeout"
+    },
+    "timestamp": 1772113260625
+  },
+  "https://x.com/zhngjah3": {
+    "data": {
+      "originUrl": "https://x.com/zhngjah3",
+      "url": "https://x.com/zhngjah3",
+      "error": "Request timeout"
+    },
+    "timestamp": 1772116628554
+  },
+  "https://github.com/sorasakuyu": {
+    "data": {
+      "originUrl": "https://github.com/sorasakuyu",
+      "url": "https://github.com/sorasakuyu",
+      "title": "sorasakuyu - Overview",
+      "description": "Cynara联合创始人，梦幻云科技联合创始人. sorasakuyu has 9 repositories available. Follow their code on GitHub.",
+      "image": "https://avatars.githubusercontent.com/u/93808231?v=4?s=400",
+      "logo": "https://github.com/fluidicon.png"
+    },
+    "timestamp": 1772116656805
+  },
+  "https://music.163.com/#/playlist?id=8676645748": {
+    "data": {
+      "originUrl": "https://music.163.com/#/playlist?id=8676645748",
+      "url": "https://music.163.com/",
+      "title": "网易云音乐",
+      "description": "网易云音乐是一款专注于发现与分享的音乐产品，依托专业音乐人、DJ、好友推荐及社交功能，为用户打造全新的音乐生活。",
+      "image": "http://p3.music.126.net/tBTNafgjNnTL1KlZMt7lVA==/18885211718935735.jpg",
+      "logo": "https://s1.music.126.net/style/favicon.ico?v20180823"
+    },
+    "timestamp": 1772116802520
+  },
+  "https://pan.baidu.com/s/1NCCckatHwxOPAxzp1WgOkw?pwd=67es": {
+    "data": {
+      "originUrl": "https://pan.baidu.com/s/1NCCckatHwxOPAxzp1WgOkw?pwd=67es",
+      "url": "https://pan.baidu.com/s/1NCCckatHwxOPAxzp1WgOkw?pwd=67es",
+      "title": "百度网盘 请输入提取码",
+      "description": "百度网盘为您提供文件的网络备份、同步和分享服务。空间大、速度快、安全稳固，支持教育网加速，支持手机端。注册使用百度网盘即可享受免费存储空间",
+      "image": null,
+      "logo": "https://pan.baidu.com/m-static/base/static/images/favicon.ico"
+    },
+    "timestamp": 1772120233927
+  }
+}

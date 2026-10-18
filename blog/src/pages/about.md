@@ -31,7 +31,7 @@ Yu=侑 与“赫”罗马音同音
 
 X 主页
 
-https://x.com/zhngjah3
+https://x.com/zhngjih3
 
 Github 主页
 

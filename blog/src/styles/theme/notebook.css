@@ -1,0 +1,72 @@
+/* ============================================================
+   文章正文的「笔记本纸」
+   ------------------------------------------------------------
+   只作用于文章页的 <article class="prose">，
+   站点其它部分的背景、字体、配色全部保持原样。
+   ============================================================ */
+@import "./lxgw-font.css";
+
+:root {
+  --paper: #ffffff;
+  --paper-rule: #c3dbf0;
+  --paper-margin: #eab0b0;
+  --paper-rule-gap: 30px;
+  --paper-margin-x: 54px;
+  --font-hand: "LXGW WenKai", "霞鹜文楷", "寒蝉全圆体", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* ---- 只有正文那一块是纸 ---- */
+article.prose {
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--paper-rule-gap) - 1px),
+      var(--paper-rule) calc(var(--paper-rule-gap) - 1px),
+      var(--paper-rule) var(--paper-rule-gap)
+    ),
+    linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(var(--paper-margin-x) - 1px),
+      var(--paper-margin) calc(var(--paper-margin-x) - 1px),
+      var(--paper-margin) var(--paper-margin-x),
+      transparent var(--paper-margin-x)
+    );
+  background-repeat: repeat-y, no-repeat;
+  background-attachment: local, local;
+  background-position: 0 0, 0 0;
+
+  border-radius: 2px;
+  padding: 1.25rem 1.5rem 1.5rem 3.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+}
+
+/* ---- 正文用手写体，行高贴住横线 ---- */
+article.prose,
+article.prose :where(p, li, span, a, div, td, th, blockquote, figcaption, strong, em) {
+  font-family: var(--font-hand);
+}
+
+article.prose :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-hand);
+  letter-spacing: 0.02em;
+}
+
+article.prose :where(p, li) {
+  line-height: var(--paper-rule-gap);
+  letter-spacing: 0.015em;
+}
+
+/* 代码保留等宽，否则读不了 */
+article.prose :where(pre, code, kbd, samp) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ---- 暗色模式：深色纸 ---- */
+.dark article.prose {
+  --paper: #1b1d21;
+  --paper-rule: #2e3742;
+  --paper-margin: #4a3038;
+}

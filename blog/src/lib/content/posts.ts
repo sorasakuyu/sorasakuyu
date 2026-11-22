@@ -315,11 +315,12 @@ export function getFeaturedCategoryNames(): string[] {
  */
 export async function getNonFeaturedPosts(locale?: string): Promise<BlogPost[]> {
   const categoryNames = getFeaturedCategoryNames();
+  // 加密文章（日记等）不进公开列表
+  const allPosts = (await getSortedPosts(locale)).filter((post) => !post.data?.password);
   if (categoryNames.length === 0) {
-    return await getSortedPosts(locale);
+    return allPosts;
   }
 
-  const allPosts = await getSortedPosts(locale);
   return allPosts.filter((post) => !categoryNames.some((catName) => isPostInCategory(post, catName)));
 }
 
@@ -386,6 +387,10 @@ export async function getHomePagePosts(locale?: string): Promise<{
 
   // 单次遍历所有文章
   for (const post of allPosts) {
+    // 带密码的文章（日记等）一律不上首页。
+    // 规则是通用的：以后新写日记只要标了 password，就自动不会出现在首页。
+    if (post.data?.password) continue;
+
     // 检查是否属于任何 featured 系列
     const isFeatured = categoryNames.some((catName) => isPostInCategory(post, catName));
 

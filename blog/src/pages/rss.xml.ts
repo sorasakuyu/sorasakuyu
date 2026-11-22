@@ -9,7 +9,7 @@ import type { BlogPost } from 'types/blog';
 import { defaultLocale } from '@/i18n';
 
 export async function GET(context: APIContext) {
-  const posts = await getSortedPosts(defaultLocale);
+  const posts = (await getSortedPosts(defaultLocale)).filter((item) => !item.data?.password);
   const { site } = context;
 
   if (!site) {

@@ -1,6 +1,8 @@
 ---
 import { CONTENT_PADDING } from '@constants/layout';
+import { encryptContent } from '@lib/crypto/encrypt';
 import { type Category, getPostSlug, getPostsByCategory, translateCategoryName } from '@lib/content';
+import { getCategoryPassword } from '@lib/content/locked-categories';
 import { displayDate } from '@lib/date';
 import { encodeSlug } from '@lib/route';
 import { cn } from '@lib/utils';
@@ -15,6 +17,31 @@ interface Props {
 const { categories, countMap, rootCategory } = Astro.props;
 const locale = getLocaleFromUrl(Astro.url.pathname);
 const posts = await getPostsByCategory(rootCategory?.name ?? '', locale);
+
+/*
+ * 锁定的分区（例如「日记」）：
+ * 列表数据在构建时用 AES-256-GCM 加密，HTML 里只有密文，
+ * 浏览器端输入密码后才解密渲染。和文章正文用的是同一套算法。
+ */
+const lockPassword = getCategoryPassword(rootCategory?.name);
+let lockedPayload: { cipher: string; iv: string; salt: string } | null = null;
+if (lockPassword) {
+  const items = (posts ?? []).map((post) => ({
+    d: displayDate.shortDate(post.data.date),
+    t: post.data?.title ?? '',
+    u: localizedPath(`/post/${encodeSlug(getPostSlug(post))}`, locale),
+  }));
+  lockedPayload = await encryptContent(JSON.stringify(items), lockPassword);
+}
+
+const gateText = {
+  title: t(locale, 'nav.home') ? `${translateCategoryName(rootCategory?.name ?? '', locale)}` : '',
+  hint: '这个分区上了锁，输入密码才能查看。',
+  placeholder: '输入密码',
+  submit: '进入',
+  wrong: '密码不对，再试一次。',
+  empty: '这个分区还没有内容。',
+};
 ---
 
 <div class={`shadow-box mx-0 flex w-full flex-col bg-gradient-start ${CONTENT_PADDING.normal}`}>
@@ -31,31 +58,150 @@ const posts = await getPostsByCategory(rootCategory?.name ?? '', locale);
 
   <div class="flex w-full flex-col">
     {
-      categories.map(
-        (category) =>
-          category?.children?.length && (
-            <div class="category-first-level-container flex flex-col">
-              {category?.children?.length &&
-                category.children.map((child) => (
-                  <SubCategory category={child} parentName={category.name} countMap={countMap} />
-                ))}
-            </div>
-          ),
-      )
+      !lockedPayload &&
+        categories.map(
+          (category) =>
+            category?.children?.length && (
+              <div class="category-first-level-container flex flex-col">
+                {category?.children?.length &&
+                  category.children.map((child) => (
+                    <SubCategory category={child} parentName={category.name} countMap={countMap} />
+                  ))}
+              </div>
+            ),
+        )
     }
     {
-      posts?.length && (
-        <div class="category-second-level-container flex flex-col">
-          {posts.map((post) => (
-            <p class="shoka-decoration-circle group text-primary hover:text-blue relative px-6 py-2 text-base/9">
-              <span class="text-muted-foreground mr-2 text-xs">{displayDate.shortDate(post.data.date)}</span>
-              <a href={localizedPath(`/post/${encodeSlug(getPostSlug(post))}`, locale)} class="dashed-border">
-                {post?.data?.title}
-              </a>
-            </p>
-          ))}
+      lockedPayload ? (
+        <div
+          class="locked-category flex flex-col gap-3 px-6 pb-6"
+          data-cipher={lockedPayload.cipher}
+          data-iv={lockedPayload.iv}
+          data-salt={lockedPayload.salt}
+          data-wrong={gateText.wrong}
+          data-empty={gateText.empty}
+        >
+          <p class="text-muted-foreground text-sm">{gateText.hint}</p>
+          <div class="locked-gate-controls flex flex-wrap items-center gap-2">
+            <input
+              type="password"
+              class="locked-input w-52 rounded-sm border px-3 py-2 text-sm outline-none"
+              placeholder={gateText.placeholder}
+              autocomplete="off"
+            />
+            <button type="button" class="locked-btn rounded-sm border px-4 py-2 text-sm hover:opacity-80">
+              {gateText.submit}
+            </button>
+            <span class="locked-err hidden text-sm text-red-500">{gateText.wrong}</span>
+          </div>
+          <div class="locked-list hidden flex-col"></div>
         </div>
+      ) : (
+        posts?.length && (
+          <div class="category-second-level-container flex flex-col">
+            {posts.map((post) => (
+              <p class="shoka-decoration-circle group text-primary hover:text-blue relative px-6 py-2 text-base/9">
+                <span class="text-muted-foreground mr-2 text-xs">{displayDate.shortDate(post.data.date)}</span>
+                <a href={localizedPath(`/post/${encodeSlug(getPostSlug(post))}`, locale)} class="dashed-border">
+                  {post?.data?.title}
+                </a>
+              </p>
+            ))}
+          </div>
+        )
       )
     }
   </div>
 </div>
+
+<script>
+  import { decryptContent } from '@lib/crypto/decrypt';
+
+  const REMEMBER_KEY = 'koharu:category-unlock:';
+
+  async function renderList(box: HTMLElement, password: string): Promise<boolean> {
+    const cipher = box.dataset.cipher ?? '';
+    const iv = box.dataset.iv ?? '';
+    const salt = box.dataset.salt ?? '';
+    const plain = await decryptContent(cipher, iv, salt, password);
+    if (plain === null) return false;
+
+    let items: { d: string; t: string; u: string }[] = [];
+    try {
+      items = JSON.parse(plain);
+    } catch {
+      items = [];
+    }
+
+    const list = box.querySelector<HTMLElement>('.locked-list');
+    const gate = box.querySelector<HTMLElement>('.locked-gate-controls');
+    if (!list) return false;
+
+    list.innerHTML = '';
+    if (!items.length) {
+      list.textContent = box.dataset.empty ?? '';
+    } else {
+      for (const item of items) {
+        const p = document.createElement('p');
+        p.className = 'shoka-decoration-circle group text-primary hover:text-blue relative px-0 py-2 text-base/9';
+        const span = document.createElement('span');
+        span.className = 'text-muted-foreground mr-2 text-xs';
+        span.textContent = item.d;
+        const a = document.createElement('a');
+        a.className = 'dashed-border';
+        a.href = item.u;
+        a.textContent = item.t;
+        p.append(span, a);
+        list.appendChild(p);
+      }
+    }
+    list.classList.remove('hidden');
+    list.classList.add('flex');
+    if (gate) gate.classList.add('hidden');
+    box.querySelector('.locked-err')?.classList.add('hidden');
+    return true;
+  }
+
+  function setup(box: HTMLElement) {
+    const input = box.querySelector<HTMLInputElement>('.locked-input');
+    const btn = box.querySelector<HTMLButtonElement>('.locked-btn');
+    const err = box.querySelector<HTMLElement>('.locked-err');
+    if (!input || !btn) return;
+
+    const unlock = async () => {
+      const pw = input.value;
+      if (!pw) return;
+      btn.disabled = true;
+      const ok = await renderList(box, pw);
+      btn.disabled = false;
+      if (!ok) {
+        err?.classList.remove('hidden');
+        input.select();
+        return;
+      }
+      try {
+        sessionStorage.setItem(REMEMBER_KEY + location.pathname, pw);
+      } catch {
+        /* sessionStorage 不可用就算了 */
+      }
+    };
+
+    btn.addEventListener('click', unlock);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') unlock();
+    });
+
+    // 同一个标签页里已经解开过，就不再问第二次
+    try {
+      const saved = sessionStorage.getItem(REMEMBER_KEY + location.pathname);
+      if (saved) {
+        input.value = saved;
+        void unlock();
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('.locked-category').forEach(setup);
+</script>

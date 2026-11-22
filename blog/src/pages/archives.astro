@@ -11,7 +11,7 @@ import { getLocaleFromUrl, localizedPath, t } from '@/i18n';
 import Layout from '../layouts/Layout.astro';
 
 const locale = getLocaleFromUrl(Astro.url.pathname);
-const posts = await getSortedPosts(locale);
+const posts = (await getSortedPosts(locale)).filter((item) => !item.data?.password);
 
 // 按年份对文章进行分组
 const postsByYear = posts.reduce(

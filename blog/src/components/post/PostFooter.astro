@@ -18,8 +18,8 @@ const locale = getLocaleFromUrl(Astro.url.pathname);
 // Check if similarity data is available
 const hasData = hasSimilarityData();
 
-// Get all posts
-const allPosts = await getSortedPosts(locale);
+// Get all posts —— 加密文章（日记等）不进随机/相关推荐，否则标题会出现在 props 里
+const allPosts = (await getSortedPosts(locale)).filter((item) => !item.data?.password);
 const totalPosts = allPosts.length;
 
 // Calculate how many posts to show on each side

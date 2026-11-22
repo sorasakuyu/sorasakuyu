@@ -13,7 +13,7 @@ export function getStaticPaths() {
 
 export async function GET(context: APIContext) {
   const lang = context.params.lang as string;
-  const posts = await getSortedPosts(lang);
+  const posts = (await getSortedPosts(lang)).filter((item) => !item.data?.password);
   const { site } = context;
 
   if (!site) {

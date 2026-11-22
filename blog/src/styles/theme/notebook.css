@@ -1,8 +1,9 @@
 /* ============================================================
    文章正文的「笔记本纸」
    ------------------------------------------------------------
-   只作用于文章页的 <article class="prose">，
-   站点其它部分的背景、字体、配色全部保持原样。
+   只作用于文章页的 <article class="prose">。
+   核心：一切纵向尺寸都取 --rhythm（30px）的整数倍，
+   让每一行文字都落在横线上。
    ============================================================ */
 @import "./lxgw-font.css";
 
@@ -10,7 +11,9 @@
   --paper: #ffffff;
   --paper-rule: #c3dbf0;
   --paper-margin: #eab0b0;
-  --paper-rule-gap: 30px;
+  --rhythm: 30px;
+  /* 横线在每一格中相对格顶的位置：贴着文字基线下缘 */
+  --rule-offset: 21px;
   --paper-margin-x: 54px;
   --font-hand: "LXGW WenKai", "霞鹜文楷", "寒蝉全圆体", -apple-system,
     BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -18,13 +21,19 @@
 
 /* ---- 只有正文那一块是纸 ---- */
 article.prose {
+  /* 上下内边距取整格，文字起点才和横线网格对齐 */
+  padding: var(--rhythm) 1.5rem var(--rhythm) 3.75rem;
+
   background-color: var(--paper);
-  background-image: repeating-linear-gradient(
+  /* 用 background-size 明确每格 30px：
+     repeating-linear-gradient 的周期由最后色标决定，不能靠它控间距。 */
+  background-image: linear-gradient(
       to bottom,
       transparent 0,
-      transparent calc(var(--paper-rule-gap) - 1px),
-      var(--paper-rule) calc(var(--paper-rule-gap) - 1px),
-      var(--paper-rule) var(--paper-rule-gap)
+      transparent calc(var(--rule-offset) - 1px),
+      var(--paper-rule) calc(var(--rule-offset) - 1px),
+      var(--paper-rule) var(--rule-offset),
+      transparent var(--rule-offset)
     ),
     linear-gradient(
       to right,
@@ -34,29 +43,83 @@ article.prose {
       var(--paper-margin) var(--paper-margin-x),
       transparent var(--paper-margin-x)
     );
+  background-size: 100% var(--rhythm), 100% 100%;
+  background-position: 0 0, 0 0;
   background-repeat: repeat-y, no-repeat;
   background-attachment: local, local;
-  background-position: 0 0, 0 0;
 
   border-radius: 2px;
-  padding: 1.25rem 1.5rem 1.5rem 3.75rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
 }
 
-/* ---- 正文用手写体，行高贴住横线 ---- */
+/* ---- 字体 ---- */
 article.prose,
 article.prose :where(p, li, span, a, div, td, th, blockquote, figcaption, strong, em) {
   font-family: var(--font-hand);
 }
 
-article.prose :where(h1, h2, h3, h4, h5, h6) {
+/* ---- 段落：行高和段间距都压在 30px 网格上 ---- */
+article.prose :where(p, li) {
+  line-height: var(--rhythm) !important;
+  margin-top: 0 !important;
+  margin-bottom: var(--rhythm) !important;
+  letter-spacing: 0.015em;
+}
+
+/* 段落之间不要额外空隙，保持连续书写的感觉 */
+article.prose > p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- 标题：高度取整格，不破坏后面的网格 ---- */
+article.prose :where(h1, h2) {
   font-family: var(--font-hand);
+  line-height: calc(var(--rhythm) * 2) !important;
+  margin-top: var(--rhythm) !important;
+  margin-bottom: 0 !important;
   letter-spacing: 0.02em;
 }
 
-article.prose :where(p, li) {
-  line-height: var(--paper-rule-gap);
-  letter-spacing: 0.015em;
+article.prose :where(h3, h4, h5, h6) {
+  font-family: var(--font-hand);
+  line-height: var(--rhythm) !important;
+  margin-top: var(--rhythm) !important;
+  margin-bottom: 0 !important;
+  letter-spacing: 0.02em;
+}
+
+/* ---- 列表、引用同样压在网格上 ---- */
+article.prose :where(ul, ol) {
+  margin-top: 0 !important;
+  margin-bottom: var(--rhythm) !important;
+  padding-left: 1.6em;
+}
+
+article.prose :where(blockquote) {
+  margin-top: 0 !important;
+  margin-bottom: var(--rhythm) !important;
+  line-height: var(--rhythm) !important;
+}
+
+/* 分隔线：整格 30px，线画在格子中间，不破坏节奏 */
+article.prose hr {
+  height: var(--rhythm) !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: linear-gradient(
+    to bottom,
+    transparent calc(50% - 1px),
+    rgba(0, 0, 0, 0.18) calc(50% - 1px),
+    rgba(0, 0, 0, 0.18) 50%,
+    transparent 50%
+  ) !important;
+}
+
+/* 表格同样压网格 */
+article.prose :where(table) {
+  line-height: var(--rhythm) !important;
+  margin-top: 0 !important;
+  margin-bottom: var(--rhythm) !important;
 }
 
 /* 代码保留等宽，否则读不了 */
@@ -69,4 +132,28 @@ article.prose :where(pre, code, kbd, samp) {
   --paper: #1b1d21;
   --paper-rule: #2e3742;
   --paper-margin: #4a3038;
+}
+
+/* ============================================================
+   图片：按 30px 格子取整，限制最大高度
+   ------------------------------------------------------------
+   实际高度由脚本算好后写进 .notebook-img 的 height，
+   图片本身用 contain 缩放，不裁切内容，多余部分留在纸面上。
+   ============================================================ */
+article.prose .notebook-img {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin: 0 0 var(--rhythm);
+  overflow: hidden;
+}
+
+article.prose .notebook-img > img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 2px;
 }

@@ -199,4 +199,97 @@ if (post.data.description) {
       <Comment />
     </div>
   </TwoColumnLayout>
+
+<script is:inline>
+  (function () {
+    var RHYTHM = 30;      // 与 notebook.css 的 --rhythm 保持一致
+    var MAX_CELLS = 22;   // 单张图最多占 22 格（660px）
+
+    function applyFit(wrap, img) {
+      var article = img.closest('article.prose');
+      if (!article) return;
+      var cs = getComputedStyle(article);
+      var avail = article.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      var nw = img.naturalWidth || 1;
+      var nh = img.naturalHeight || 1;
+      var scale = Math.min(1, avail / nw);
+      var h = nh * scale;
+      var cells = Math.ceil(h / RHYTHM);
+      if (!isFinite(cells) || cells <= 0) cells = 3;
+      cells = Math.min(cells, MAX_CELLS);
+      wrap.style.height = cells * RHYTHM + 'px';
+      wrap.style.marginBottom = RHYTHM + 'px';
+    }
+
+    function layoutImages(root) {
+      var scope = root || document;
+      scope.querySelectorAll('article.prose img').forEach(function (img) {
+        if (img.closest('.notebook-img')) return;
+
+        // 没加载完就先不动，等它 load 回来再算，避免拿 0x0 去算高度
+        if (!img.complete || !img.naturalWidth) {
+          if (!img.dataset.kgWait) {
+            img.dataset.kgWait = '1';
+            img.addEventListener(
+              'load',
+              function () { layoutImages(img.closest('article.prose') || document); },
+              { once: true },
+            );
+          }
+          return;
+        }
+
+        // 行内小图标、表情图不参与排版
+        if (img.naturalWidth < 120) return;
+
+        var holder = img.parentElement;
+        if (holder && holder.tagName === 'A') holder = holder.parentElement;
+
+        var imageOnlyParagraph =
+          holder &&
+          holder.tagName === 'P' &&
+          holder.textContent.trim() === '' &&
+          holder.querySelectorAll('img').length === 1;
+
+        if (imageOnlyParagraph) {
+          // <p><a><img></a></p>：把 p 直接变成图片格子，
+          // 不往 p 里塞 div（div 在 p 内不合法，浏览器会拆行导致错位）
+          holder.classList.add('notebook-img');
+          holder.style.marginTop = '0';
+          applyFit(holder, img);
+        } else {
+          var wrap = document.createElement('div');
+          wrap.className = 'notebook-img';
+          img.parentNode.insertBefore(wrap, img);
+          wrap.appendChild(img);
+          applyFit(wrap, img);
+        }
+      });
+    }
+
+    function setup() {
+      layoutImages();
+      // 加密文章是解密后才插进 DOM 的，图片得跟着补算
+      var article = document.querySelector('article.prose');
+      if (article && !article.dataset.kgObserve) {
+        article.dataset.kgObserve = '1';
+        new MutationObserver(function () { layoutImages(article); }).observe(article, {
+          childList: true,
+          subtree: true,
+        });
+      }
+    }
+
+    document.addEventListener('astro:page-load', setup);
+    if (document.readyState !== 'loading') setup();
+    else document.addEventListener('DOMContentLoaded', setup);
+
+    window.addEventListener('resize', function () {
+      document.querySelectorAll('article.prose .notebook-img').forEach(function (w) {
+        var img = w.querySelector('img');
+        if (img) applyFit(w, img);
+      });
+    });
+  })();
+</script>
 </Layout>

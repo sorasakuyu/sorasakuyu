@@ -6,14 +6,14 @@ date: 2025-01-03 01:01:33
 description: "关于我？"
 ---
 
-## Hi, I'm SorasakuYu
+## Hi, I'm Azumi Yu
 
 <p align="center">
     <img width="300px" src="https://count.getloli.com/@:sorasakuyu" alt=":sorasakuyu"></img>
 </p>
 
 
-Sorasaku=空桜 是日本很普通的一个姓氏
+Azumi=安見 是日本很普通的一个姓氏
 
 Yu=侑 与“赫”罗马音同音
 
